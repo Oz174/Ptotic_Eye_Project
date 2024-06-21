@@ -78,7 +78,7 @@ def getEylidContour(path, verbose=False):
     extracted_eyes = get_eyes(path)
     cx,cy = get_center(extracted_eyes)
     edges = cv2.Canny(extracted_eyes,450,600)
-    max_y = edges.shape[0]
+    imgHeight = edges.shape[0]
     kernel = make_circular_kernel((3,3),1)
     edges = cv2.dilate(edges,kernel,iterations=1) 
     contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -100,16 +100,16 @@ def getEylidContour(path, verbose=False):
     x = largest_contour[:,0,0]
     y = largest_contour[:,0,1]
     points = np.array([x,y]).T
-    # modify the y to be max_y - y
-    points[:,1] = max_y - points[:,1]
+    # modify the y to be imgHeight - y
+    points[:,1] = imgHeight - points[:,1]
     if verbose:
-        plt.scatter(cx,max_y-cy,color='red')
+        plt.scatter(cx,imgHeight-cy,color='red')
         plt.plot(points[:,0],points[:,1],color='green')
-        # show the image from 0 to max_y
-        plt.ylim(0,max_y)
+        # show the image from 0 to imgHeight
+        plt.ylim(0,imgHeight)
         plt.xlim(0,points[:,0].max())
         plt.show()
-    centerY= max_y-cy
+    centerY= imgHeight-cy
     # get intersection between the center and the contour
     # access points by x of the center
     points = points[np.where(abs(points[:,0] - cx)<20)]
@@ -122,4 +122,11 @@ def getEylidContour(path, verbose=False):
     divisionFactor=15
     mrd1 = mrd1/divisionFactor
     print("mrd1: ",round(mrd1,2), " mm")
+
+    #point that has maxY
+    maxYPoint = points[np.argmax(points[:,1])]
+    mrd1Phul= abs(maxYPoint[0] - cx)
+    mrd1Phul = mrd1Phul/divisionFactor
+    print("mrd1Phul: ",round(mrd1Phul,2), " mm")
+    print("=====================================")
     return points
