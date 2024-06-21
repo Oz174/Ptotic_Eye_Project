@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+from skimage.morphology import skeletonize
 
 # gets eye from the image (one eye given)
 def get_eyes(path):
@@ -73,23 +74,58 @@ def get_center(eyes,lowcanny=450, highcanny=500,dp=1,iterations=1,verbose=False)
     return pupil[0] , pupil[1]
 
 
-def least_squares_cubic(x, y):
-  """
-  Find the coefficients of a cubic polynomial that interpolates to the given points
-  using least squares.
-
-  Args:
-      x: A list of x-coordinates.
-      y: A list of y-coordinates corresponding to the x-coordinates.
-
-  Returns:
-      A list of coefficients [a, b, c, d] for the cubic polynomial ax^3 + bx^2 + cx + d.
-  """
-
-  # Design matrix with ones on the diagonal, x, x^2, and x^3
-  A = np.vander(x, increasing=True).T
-
-  # Solve the linear system using least squares
-  coefficients, _, _, _ = np.linalg.lstsq(A, y, rcond=None)
-
-  return coefficients.tolist()
+def getEylidContour(path, verbose):
+    extracted_eyes = get_eyes(path)
+    cx,cy = get_center(extracted_eyes)
+    edges = cv2.Canny(extracted_eyes,450,600)
+    max_y = edges.shape[0]
+    if verbose:
+        plt.imshow(edges,cmap='gray')
+        plt.axis('off')
+        # mark cx,cy on the image
+        plt.plot(cx,cy,'ro')
+        # as y values increase, the point moves downwards on the image plot 
+        plt.plot(cx,cy+10,'bx')
+        plt.show()
+    kernel = make_circular_kernel((3,3),1)
+    edges = cv2.dilate(edges,kernel,iterations=1) 
+    if verbose:
+        plt.imshow(edges,cmap='gray')
+        plt.axis('off')
+        plt.show()
+    contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    # get the largest contour
+    largest_contour = max(contours, key=cv2.contourArea)
+    mask = np.zeros_like(extracted_eyes)
+    cv2.drawContours(mask, [largest_contour], -1, (255, 255, 255), -1)
+    if verbose:
+        plt.imshow(mask,cmap='gray')
+        plt.axis('off')
+        plt.show()
+    skeleton = skeletonize(mask)
+    if verbose:
+        plt.imshow(skeleton,cmap='gray')
+        plt.axis('off')
+        plt.show()
+    skeleton=skeleton.astype(np.uint8)
+    contours, _ = cv2.findContours(skeleton, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    largest_contour = max(contours, key=cv2.contourArea)
+    mask = np.zeros_like(extracted_eyes)
+    cv2.drawContours(mask, [largest_contour], -1, (255, 255, 255), -1)
+    if verbose:
+        plt.imshow(mask,cmap='gray')
+        plt.axis('off')
+        plt.show()
+    # apply cubic spline on the largest contour 
+    x = largest_contour[:,0,0]
+    y = largest_contour[:,0,1]
+    points = np.array([x,y]).T
+    # modify the y to be max_y - y
+    points[:,1] = max_y - points[:,1]
+    plt.scatter(cx,max_y-cy,color='red')
+    plt.plot(points[:,0],points[:,1],color='green')
+    # show the image from 0 to max_y
+    plt.ylim(0,max_y)
+    plt.xlim(0,points[:,0].max())
+    plt.show()
+    return points
