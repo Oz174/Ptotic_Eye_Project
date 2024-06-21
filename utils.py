@@ -71,3 +71,25 @@ def get_center(eyes,lowcanny=450, highcanny=500,dp=1,iterations=1,verbose=False)
         plt.axis('off')
         plt.show()
     return pupil[0] , pupil[1]
+
+
+def least_squares_cubic(x, y):
+  """
+  Find the coefficients of a cubic polynomial that interpolates to the given points
+  using least squares.
+
+  Args:
+      x: A list of x-coordinates.
+      y: A list of y-coordinates corresponding to the x-coordinates.
+
+  Returns:
+      A list of coefficients [a, b, c, d] for the cubic polynomial ax^3 + bx^2 + cx + d.
+  """
+
+  # Design matrix with ones on the diagonal, x, x^2, and x^3
+  A = np.vander(x, increasing=True).T
+
+  # Solve the linear system using least squares
+  coefficients, _, _, _ = np.linalg.lstsq(A, y, rcond=None)
+
+  return coefficients.tolist()
