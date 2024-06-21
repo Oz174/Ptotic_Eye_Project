@@ -74,7 +74,7 @@ def get_center(eyes,lowcanny=450, highcanny=500,dp=1,iterations=1,verbose=False)
     return pupil[0] , pupil[1]
 
 
-def getEylidContour(path, verbose):
+def getEylidContour(path, verbose=False):
     extracted_eyes = get_eyes(path)
     cx,cy = get_center(extracted_eyes)
     edges = cv2.Canny(extracted_eyes,450,600)
@@ -97,7 +97,6 @@ def getEylidContour(path, verbose):
     #     plt.plot(cx,cy,'ro')
     #     plt.axis('off')
     #     plt.show()
-    # apply cubic spline on the largest contour 
     x = largest_contour[:,0,0]
     y = largest_contour[:,0,1]
     points = np.array([x,y]).T
@@ -110,4 +109,17 @@ def getEylidContour(path, verbose):
         plt.ylim(0,max_y)
         plt.xlim(0,points[:,0].max())
         plt.show()
+    centerY= max_y-cy
+    # get intersection between the center and the contour
+    # access points by x of the center
+    points = points[np.where(abs(points[:,0] - cx)<20)]
+    # pick the point with closest x to the center
+    center_project_OnContour = points[np.argmin(np.abs(points[:,0]-cx))]
+    # points = points[np.where(points[:,0] == cx)]
+
+    #md1 is the difference of y between the center and the point on the contour
+    mrd1 = center_project_OnContour[1] - centerY
+    divisionFactor=15
+    mrd1 = mrd1/divisionFactor
+    print("mrd1: ",round(mrd1,2), " mm")
     return points
