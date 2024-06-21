@@ -70,4 +70,4 @@ def get_center(eyes,lowcanny=450, highcanny=500,dp=1,iterations=1,verbose=False)
         plt.imshow(eyes,cmap='gray')
         plt.axis('off')
         plt.show()
-    return sorted(circles,key=lambda x : x[0])
+    return pupil[0] , pupil[1]
