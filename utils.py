@@ -35,6 +35,9 @@ def make_circular_kernel(shape,radius):
 
 # for pupil detection given one eye image
 def get_center(eyes,lowcanny=450, highcanny=500,dp=1,iterations=1,verbose=False):
+    if isinstance(eyes,str):
+        eyes = get_eyes(eyes)
+    
     kernel = make_circular_kernel((13,13),6)
    
     edges = cv2.Canny(eyes,lowcanny,highcanny)
@@ -61,11 +64,12 @@ def get_center(eyes,lowcanny=450, highcanny=500,dp=1,iterations=1,verbose=False)
         min_arr = []
         for x,y,_ in circles:
         # make filter and use to check if the surrounding is black 
-            window = eyes[y-10:y+10,x-10:x+10]
-            min_arr.append(np.mean(window))
+            window = eyes[y-5:y+5,x-8:x+8]
+            min_arr.append(np.std(window))
+            # print(np.std(window))
 
     # get the pupil with the darkest surrounding
-    pupil = circles[np.argmin(min_arr)]
+    pupil = circles[np.argmax(min_arr)]
     if verbose:
         cv2.drawMarker(eyes,(pupil[0],pupil[1]),color=(100,255,100),markerType=cv2.MARKER_TILTED_CROSS,thickness=2)
         plt.imshow(eyes,cmap='gray')
@@ -119,14 +123,14 @@ def getEylidContour(path, verbose=False):
 
     #md1 is the difference of y between the center and the point on the contour
     mrd1 = center_project_OnContour[1] - centerY
-    divisionFactor=15
-    mrd1 = mrd1/divisionFactor
+    ScalingFactor= 0.264583
+    mrd1 = mrd1 * ScalingFactor / 5
     print("mrd1: ",round(mrd1,2), " mm")
 
     #point that has maxY
     maxYPoint = points[np.argmax(points[:,1])]
     mrd1Phul= abs(maxYPoint[0] - cx)
-    mrd1Phul = mrd1Phul/divisionFactor
+    mrd1Phul = mrd1Phul * ScalingFactor / 5
     print("mrd1Phul: ",round(mrd1Phul,2), " mm")
     print("=====================================")
     return points
