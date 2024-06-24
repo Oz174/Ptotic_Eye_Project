@@ -1,4 +1,0 @@
-- sample_2.jpg , MRD1 = 4mm 
-- sample_3.jpg , MRD1 = 4mm
-- sample_4.jpg , MRD1 = 1mm
-- sample_5.jpg , MRD1 = 3.5mm 
