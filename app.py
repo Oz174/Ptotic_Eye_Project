@@ -47,6 +47,7 @@ def process_preop():
     upper_right_contour,upper_left_contour,right_pupil,left_pupil = fu.read_coordinates(file1,split_index_preop)
     fx,gx,mrdr,mrdl,pmr,pml= fu.plot_contour(upper_right_contour,upper_left_contour,right_pupil,left_pupil,ptotic,degree,"Preoperative")
     new_root = tk.Tk()
+    new_root.title("Preoperative Stats")
     table = ttk.Treeview(new_root,columns=( "Feature", "Value"), show= 'headings')
     table.heading("Feature", text="Feature")
     table.heading("Value", text="Value")
@@ -90,6 +91,8 @@ def process_postop():
     upper_right_contour,upper_left_contour,right_pupil,left_pupil = fu.read_coordinates(file2,split_index_postop)
     fx,gx,mrdr,mrdl,pmr,pml= fu.plot_contour(upper_right_contour,upper_left_contour,right_pupil,left_pupil,ptotic,degree,"Postoperative")
     new_root2 = tk.Tk()
+    new_root2.title("Postoperative Stats")
+    
     table = ttk.Treeview(new_root2, columns=("Feature","Value"), show='headings')
     table.heading("Feature", text="Feature")
     table.heading("Value", text="Value")
