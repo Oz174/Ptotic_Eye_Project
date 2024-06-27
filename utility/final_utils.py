@@ -31,58 +31,69 @@ def choose_best_fit_degree(contour,degree):
 
 def compute_similarity(right_eye_feature,left_eye_feature,ptotic):
     if ptotic == 'r':
-        return round(100 * right_eye_feature / left_eye_feature,2)
+        return f"{round(100 * right_eye_feature / left_eye_feature,2)}%"
     else:
-        return round(100 * left_eye_feature / right_eye_feature,2)
+        return f"{round(100 * left_eye_feature / right_eye_feature,2)}%"
 
-def plot_contour(right_contour,left_contour,right_pupil,left_pupil,ptotic,degree):
-    if not plt.gca().yaxis_inverted():
-        plt.gca().invert_yaxis()
-    plt.scatter(right_pupil[0]/100,right_pupil[1]/100,c='r')
-    plt.scatter(left_pupil[0]/100,left_pupil[1]/100,c='b')
+def plot_contour(right_contour,left_contour,right_pupil,left_pupil,ptotic,degree,title):
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
+    if not ax.yaxis_inverted():
+        ax.invert_yaxis()
+    
+    ax.scatter(right_pupil[0]/100,right_pupil[1]/100,c='r')
+    ax.scatter(left_pupil[0]/100,left_pupil[1]/100,c='b')
+    
 
     #################### CHOOSING THE FIT ##########################
     x_right,fx = choose_best_fit_degree(right_contour,degree)
-    print(f"Equation of the right eye : \n {fx}")
+    #print(f"Equation of the right eye : \n {fx}")
     x_left,gx = choose_best_fit_degree(left_contour,degree)
-    print(f"Equation of the left eye: \n {gx}")
+    #print(f"Equation of the left eye: \n {gx}")
 
     #################### PLOTTING THE FIT ##########################
     x_right_new = np.linspace(min(x_right),max(x_right),100)
     y_right_new = fx(x_right_new)
-    plt.plot(x_right_new,y_right_new,c='r')
+    
+   
+    
+    ax.plot(x_right_new,y_right_new,c='r')
 
     x_left_new = np.linspace(min(x_left),max(x_left),100)
     y_left_new = gx(x_left_new)
-    plt.plot(x_left_new,y_left_new,c='b')
+    ax.plot(x_left_new,y_left_new,c='b')
 
-    plt.xlim(min(x_right)-1,max(x_left)+1)
-
+    
     ## MRD plot line
-    plt.plot([right_pupil[0]/100,right_pupil[0]/100], [right_pupil[1]/100,fx(right_pupil[0]/100) ], linestyle='--',color='r')
-    plt.plot([left_pupil[0]/100,left_pupil[0]/100], [left_pupil[1]/100,gx(left_pupil[0]/100) ], linestyle='--',color='b')
+    ax.plot([right_pupil[0]/100,right_pupil[0]/100], [right_pupil[1]/100,fx(right_pupil[0]/100) ], linestyle='--',color='r')
+    ax.plot([left_pupil[0]/100,left_pupil[0]/100], [left_pupil[1]/100,gx(left_pupil[0]/100) ], linestyle='--',color='b')
     
     # PHUL plotline
-    plt.plot([x_right_new[np.argmin(fx(x_right_new))],x_right_new[np.argmin(fx(x_right_new))]],[min(fx(x_right_new)),right_pupil[1]/100],linestyle='--',color='r')
-    plt.plot([x_left_new[np.argmin(gx(x_left_new))],x_left_new[np.argmin(gx(x_left_new))]],[min(gx(x_left_new)),left_pupil[1]/100],linestyle='--',color='b')
-    plt.show()
+    ax.plot([x_right_new[np.argmin(fx(x_right_new))],x_right_new[np.argmin(fx(x_right_new))]],[min(fx(x_right_new)),right_pupil[1]/100],linestyle='--',color='r')
+    ax.plot([x_left_new[np.argmin(gx(x_left_new))],x_left_new[np.argmin(gx(x_left_new))]],[min(gx(x_left_new)),left_pupil[1]/100],linestyle='--',color='b')
+    #plot title
+    ax.set_title(title)
+
+
     ######################### MRD1 , PHUL , Similarity ############################
     ########################### MRD1 ##################################
-    mrd1_right = abs(round((fx(right_pupil[0]/100) - right_pupil[1]/100),2))
-    print(f"MRD1 right eye : {mrd1_right} cm" )
+    mrd1_right = abs(round(10*(fx(right_pupil[0]/100) - right_pupil[1]/100),2))
+    #print(f"MRD1 right eye : {mrd1_right} mm" )
 
-    mrd1_left = abs(round((gx(left_pupil[0]/100) - left_pupil[1]/100),2))
-    print(f"MRD1 left eye : {mrd1_left} cm" )
+    mrd1_left = abs(round(10*(gx(left_pupil[0]/100) - left_pupil[1]/100),2))
+    #print(f"MRD1 left eye : {mrd1_left} mm" )
 
     ########################### PHUL ##################################
     mrd1phul_right = abs(x_right_new[np.argmin(fx(x_right_new))] - right_pupil[0]/100)
-    print(f"PHUL - MRD1 right_eye: {round(mrd1phul_right,5)} cm")
+    #print(f"PHUL - MRD1 right_eye: {round(mrd1phul_right,5)*10} mm")
 
     mrd1phul_left = abs(x_left_new[np.argmin(gx(x_left_new))] - left_pupil[0]/100)
 
-    print(f"PHUL - MRD1 left_eye: {round(mrd1phul_left,5)} cm")
+    #print(f"PHUL - MRD1 left_eye: {round(mrd1phul_left,5)*10} mm")
 
     ########################### SIMILARITY ##################################
-    print(f"Similarity between MRD1 in both eyes :{compute_similarity(mrd1_right,mrd1_left,ptotic)} %")
-    print(f"Similarity between PHUL - MRD1 in both eyes :{compute_similarity(mrd1phul_right,mrd1phul_left,ptotic)} %")
-    
+    #print(f"Similarity between MRD1 in both eyes :{compute_similarity(mrd1_right,mrd1_left,ptotic)} %")
+    #print(f"Similarity between PHUL - MRD1 in both eyes :{compute_similarity(mrd1phul_right,mrd1phul_left,ptotic)} %") 
+
+    return fx,gx,mrd1_right,mrd1_left,mrd1phul_right,mrd1phul_left
