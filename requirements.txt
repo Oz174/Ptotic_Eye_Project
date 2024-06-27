@@ -1,6 +1,3 @@
-scikit-image
-opencv-python
 matplotlib
 numpy
-scipy
 tk
