@@ -131,6 +131,18 @@ split_idx_preop_lbl.grid(column=2, row=0)
 split_idx_preop = tk.Entry(root)
 split_idx_preop.grid(column=3, row=0)
 
+# entry text with label 'split index'
+split_idx_postop_lbl = tk.Label(root, text="Split Index :")
+split_idx_postop_lbl.grid(column=2, row=1)
+split_idx_postop = tk.Entry(root)
+split_idx_postop.grid(column=3, row=1)
+
+# entry text with label 'degree'
+degree_label = tk.Label(root, text="Degree:")
+degree_label.grid(column=0, row=3)
+degree_entry = tk.Entry(root)
+degree_entry.grid(column=1, row=3)
+
 # label file 2 (because I want to select two files)
 file_label2 = tk.Label(root, text="Postoperative Coordinates Text File:")
 file_label2.grid(column=0, row=1)
@@ -139,11 +151,6 @@ file_label2.grid(column=0, row=1)
 browse_button2 = tk.Button(root, text="Browse", command=lambda: browse_files(file_label2))
 browse_button2.grid(column=1,row=1)
 
-# entry text with label 'split index'
-split_idx_postop_lbl = tk.Label(root, text="Split Index :")
-split_idx_postop_lbl.grid(column=2, row=1)
-split_idx_postop = tk.Entry(root)
-split_idx_postop.grid(column=3, row=1)
 
 # Two radio buttons for left and right with label named ptotic 
 ptotic_label = tk.Label(root, text="Ptotic Side:")
@@ -157,12 +164,6 @@ radio_left.grid(column=1, row=2)
 radio_right = tk.Radiobutton(root, text="Right", variable=ptotic_side, value="r")
 radio_right.grid(column=2, row=2)
 
-
-# entry text with label 'degree'
-degree_label = tk.Label(root, text="Degree:")
-degree_label.grid(column=0, row=3)
-degree_entry = tk.Entry(root)
-degree_entry.grid(column=1, row=3)
 
 
 
