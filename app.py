@@ -5,11 +5,24 @@ import os
 from matplotlib import pyplot as plt
 from utility import final_utils as fu
 
+process_preop_clicked = False
+process_postop_clicked = False
+
+def show_plots():
+    """
+    Shows the plots of the selected files.
+    """
+    if not process_preop_clicked or not process_postop_clicked:
+        tk.messagebox.showerror("Error", "Please process the preoperative and postoperative files first")
+        return
+
+    plt.show()
 
 def process_preop():
     """
     Returns the values of the selected files and radio buttons.
     """
+    global process_preop_clicked
     file1 = file_label.cget("text")
     # try to open the file1 and file2 , if no then put label as empty 
     if not os.path.exists(file1):
@@ -47,11 +60,13 @@ def process_preop():
     table.insert("","end",values=("PHUL-MRD1 left eye(mm)",pml))
     table.insert("","end",values=("Similarity MRD1",fu.compute_similarity(mrdr,mrdl,ptotic)))
     table.insert("","end",values=("Similarity PHUL-MRD1",fu.compute_similarity(pmr,pml,ptotic)))
+    process_preop_clicked = True
 
 def process_postop():
     """
     Returns the values of the selected files and radio buttons.
     """
+    global process_postop_clicked
     file2 = file_label2.cget("text")
     # try to open the file1 and file2 , if no then put label as empty 
     if not os.path.exists(file2):
@@ -88,7 +103,7 @@ def process_postop():
     table.insert("","end",values=("PHUL-MRD1 left eye",pml))
     table.insert("","end",values=("Similarity MRD1",fu.compute_similarity(mrdr,mrdl,ptotic)))
     table.insert("","end",values=("Similarity PHUL-MRD1",fu.compute_similarity(pmr,pml,ptotic)))
-    
+    process_postop_clicked = True
 
 def browse_files(label):
   """
@@ -158,7 +173,7 @@ preop_button.grid(column=0, row=5)
 postop_button = tk.Button(root, text="Show PostOp Stats", command=process_postop)
 postop_button.grid(column=1, row=5)
 
-show_plots_btn = tk.Button(root, text="Show Both Plots", command=lambda: plt.show())
+show_plots_btn = tk.Button(root, text="Show All Plots", command=lambda: plt.show())
 show_plots_btn.grid(column=2, row=5)    
 
 root.mainloop()
