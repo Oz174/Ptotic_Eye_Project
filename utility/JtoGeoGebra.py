@@ -17,11 +17,17 @@ with open("../rotated_post.txt", "r") as file:
         else:
             dataToWrite2.append((twonumbers[0],twonumbers[1]))
 print("{")
-for lol in dataToWrite1:
-    print(lol,",")
+for i,lol in enumerate(dataToWrite1):
+    if i != len(dataToWrite1)-1:
+        print(lol,",")
+    else :
+        print(lol)
 print("}")
 print("{")
-for lol in dataToWrite2:
-    print(lol,",")
+for i,lol in enumerate(dataToWrite2):
+    if i != len(dataToWrite2)-1:
+        print(lol,",")
+    else :
+        print(lol)
 print("}")
 
