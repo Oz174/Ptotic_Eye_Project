@@ -95,8 +95,8 @@ def process_postop():
     table.heading("Value", text="Value")
 
     table.pack(fill='both', expand=True)
-    table.insert("","end",values=("Equation of Right Eye",fx.coefficients))
-    table.insert("","end",values=("Equation of Left Eye",gx.coefficients))
+    table.insert("","end",values=("Equation of Right Eye",[round(aarg,2) for aarg in list(fx.coefficients)]))
+    table.insert("","end",values=("Equation of Left Eye",[round(aarg,2) for aarg in list(gx.coefficients)]))
     table.insert("","end",values=("MRD1 Right",mrdr))
     table.insert("","end",values=("MRD1 Left",mrdl))
     table.insert("","end",values=("PHUL-MRD1 right eye",pmr))
