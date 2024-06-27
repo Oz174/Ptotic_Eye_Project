@@ -60,7 +60,7 @@ def process_preop():
     table.insert("","end",values=("PHUL-MRD1 left eye(mm)",pml))
     table.insert("","end",values=("Similarity MRD1",fu.compute_similarity(mrdr,mrdl,ptotic)))
     table.insert("","end",values=("Similarity PHUL-MRD1",fu.compute_similarity(pmr,pml,ptotic)))
-    process_preop_clicked = True
+    process_preop_clicked = not process_preop_clicked
 
 def process_postop():
     """
@@ -103,7 +103,7 @@ def process_postop():
     table.insert("","end",values=("PHUL-MRD1 left eye",pml))
     table.insert("","end",values=("Similarity MRD1",fu.compute_similarity(mrdr,mrdl,ptotic)))
     table.insert("","end",values=("Similarity PHUL-MRD1",fu.compute_similarity(pmr,pml,ptotic)))
-    process_postop_clicked = True
+    process_postop_clicked = not process_postop_clicked
 
 def browse_files(label):
   """
